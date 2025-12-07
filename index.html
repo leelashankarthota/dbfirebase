@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firebase Login Form</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 330px;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      background: #007bff;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #005dc1;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    <h2>Login</h2>
+
+    <input type="email" id="email" placeholder="Enter email" required>
+    <input type="password" id="password" placeholder="Enter password" required>
+
+    <button onclick="login()">Login</button>
+
+    <p id="msg" style="color:green; margin-top:10px; text-align:center;"></p>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+    // Firebase Config (Yours)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXhljzov1Nb8DorR5anFn3ASyzZE9-dCk",
+      authDomain: "firstweb-f070d.firebaseapp.com",
+      projectId: "firstweb-f070d",
+      storageBucket: "firstweb-f070d.firebasestorage.app",
+      messagingSenderId: "158320763794",
+      appId: "1:158320763794:web:bb4cd6a2f310f6f470574b",
+      measurementId: "G-F1JGRBQVWG"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Login Function
+    window.login = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      if (email === "" || password === "") {
+        msg.style.color = "red";
+        msg.innerText = "Please fill all fields";
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "loginData"), {
+          email: email,
+          password: password,
+          time: new Date()
+        });
+
+        msg.style.color = "green";
+        msg.innerText = "Login data stored successfully!";
+      } 
+      catch (error) {
+        console.error("Error:", error);
+        msg.style.color = "red";
+        msg.innerText = "Error saving data!";
+      }
+    };
+  </script>
+
+</body>
+</html>
